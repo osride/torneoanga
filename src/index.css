@@ -1,0 +1,44 @@
+/* index.css o App.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+/* Fondo fijo con imagen, no repetida, tamaño cover y opacidad solo en la imagen */
+/*
+.background-fixed {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background-image: url('./assets/img/angaLogo.jpg'); /* Coloca la imagen en la carpeta public raíz de Vite 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+*/
+
+/* Capa translúcida solo para la imagen */
+.bg-custom::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* Opacidad aquí */
+  pointer-events: none;
+  z-index: 0;
+  
+}
+
+
+
+.bg-custom {
+  background-image: url('./assets/img/angaLogo.jpg'); /* Coloca la imagen en la carpeta public raíz de Vite */
+  background-size: 40%;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: brightness(0.95);
+  /*opacity: 0.7;*/
+}
