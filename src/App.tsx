@@ -303,6 +303,7 @@ export default function App() {
     useCORS: true,
     backgroundColor: null,
     scale: 2,
+    foreignObjectRendering: true, // <---
   });
 
   // Crear canvas para fondo + título + contenido
@@ -326,7 +327,8 @@ export default function App() {
 
   let bgImg: HTMLImageElement | null = null;
   try {
-    bgImg = await loadImage('../assets/img/angaLogo.jpg'); // Ajusta ruta si hace falta
+    //bgImg = await loadImage('../assets/img/angaLogo.jpg'); // Ajusta ruta si hace falta
+    bgImg = await loadImage('/angaLogo.jpg'); // Ajusta ruta si hace falta
   } catch {
     console.warn('No se pudo cargar la imagen de fondo.');
   }
