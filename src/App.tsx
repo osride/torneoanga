@@ -294,6 +294,13 @@ export default function App() {
   }, [matches]);
 
   const exportPDF = async () => {
+
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  if (isAndroid) {
+    alert("La exportación a PDF funciona mejor desde un computador. Intenta desde un navegador de escritorio para mejores resultados.");
+    return;
+  }
+  
   if (!flowRef.current) return;
   setExporting(true);
   await new Promise((resolve) => setTimeout(resolve, 200)); // espera para estilos
@@ -360,6 +367,30 @@ export default function App() {
   pdf.save('torneo.pdf');
   setExporting(false);
 };
+
+const exportPNG = async () => {
+  if (!flowRef.current) return;
+  setExporting(true);
+  await new Promise((r) => setTimeout(r, 200)); // pequeña espera para asegurar render
+
+  const canvas = await html2canvas(flowRef.current, {
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    scale: 2,
+    foreignObjectRendering: true,
+  });
+
+  const imgData = canvas.toDataURL('image/png');
+
+  // Crear enlace de descarga
+  const link = document.createElement('a');
+  link.href = imgData;
+  link.download = 'torneo.png';
+  link.click();
+
+  setExporting(false);
+};
+
 
 
   return (
@@ -439,7 +470,8 @@ export default function App() {
           </div>
           <div className="absolute right-4 top-4 z-50 flex gap-2">
             <button
-              onClick={exportPDF}
+              //onClick={exportPDF}
+              onClick={exportPNG}
               className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded shadow"
             >
               Exportar a PDF
