@@ -26,6 +26,8 @@ const TrophyIcon = () => (
   />
 );
 
+//const { fitView } = useReactFlow();
+
 const fireworkVariants: Variants = {
   hidden: { opacity: 0, scale: 0 },
   visible: (i: number) => ({
@@ -296,6 +298,7 @@ export default function App() {
   const exportPDF = async () => {
   if (!flowRef.current) return;
   setExporting(true);
+  //fitView(); // Ajusta la vista automáticamente para que quepa todo
   await new Promise((resolve) => setTimeout(resolve, 200)); // espera para estilos
 
   // Captura la parte visual del torneo
@@ -359,7 +362,8 @@ export default function App() {
 
   // Crear PDF con jsPDF, tamaño relativo
   const imgData = finalCanvas.toDataURL('image/png');
-  const pdf = new jsPDF('landscape', undefined, [pdfWidth * 0.75, pdfHeight * 0.75]);
+  //const pdf = new jsPDF('landscape', undefined, [pdfWidth * 0.75, pdfHeight * 0.75]);
+  const pdf = new jsPDF('landscape', undefined, [pdfWidth, pdfHeight]);
   const imgProps = pdf.getImageProperties(imgData);
   const pdfPageWidth = pdf.internal.pageSize.getWidth();
   const pdfPageHeight = (imgProps.height * pdfPageWidth) / imgProps.width;
