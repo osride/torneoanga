@@ -294,13 +294,6 @@ export default function App() {
   }, [matches]);
 
   const exportPDF = async () => {
-
-  const isAndroid = /Android/i.test(navigator.userAgent);
-  if (isAndroid) {
-    alert("La exportación a PDF funciona mejor desde un computador. Intenta desde un navegador de escritorio para mejores resultados.");
-    return;
-  }
-  
   if (!flowRef.current) return;
   setExporting(true);
   await new Promise((resolve) => setTimeout(resolve, 200)); // espera para estilos
@@ -310,7 +303,6 @@ export default function App() {
     useCORS: true,
     backgroundColor: null,
     scale: 2,
-    foreignObjectRendering: true, // <---
   });
 
   // Crear canvas para fondo + título + contenido
@@ -334,7 +326,6 @@ export default function App() {
 
   let bgImg: HTMLImageElement | null = null;
   try {
-    //bgImg = await loadImage('../assets/img/angaLogo.jpg'); // Ajusta ruta si hace falta
     bgImg = await loadImage('/angaLogo.jpg'); // Ajusta ruta si hace falta
   } catch {
     console.warn('No se pudo cargar la imagen de fondo.');
@@ -342,10 +333,20 @@ export default function App() {
 
   // Dibujar imagen fondo (si cargó)
   if (bgImg) {
-    ctx.globalAlpha = 0.1; // baja opacidad para fondo tenue
-    ctx.drawImage(bgImg, 0, 0, pdfWidth, pdfHeight);
-    ctx.globalAlpha = 1;
-  }
+  ctx.globalAlpha = 0.1;
+
+  const scale = Math.min(pdfWidth / bgImg.width, pdfHeight / bgImg.height);
+  const imgWidth = bgImg.width * scale;
+  const imgHeight = bgImg.height * scale;
+
+  const x = (pdfWidth - imgWidth) / 2;
+  const y = (pdfHeight - imgHeight) / 2;
+
+  ctx.drawImage(bgImg, x, y, imgWidth, imgHeight);
+
+  ctx.globalAlpha = 1;
+}
+
 
   // Dibujar título arriba, centrado
   ctx.fillStyle = '#1e40af'; // azul oscuro
@@ -367,30 +368,6 @@ export default function App() {
   pdf.save('torneo.pdf');
   setExporting(false);
 };
-
-const exportPNG = async () => {
-  if (!flowRef.current) return;
-  setExporting(true);
-  await new Promise((r) => setTimeout(r, 200)); // pequeña espera para asegurar render
-
-  const canvas = await html2canvas(flowRef.current, {
-    useCORS: true,
-    backgroundColor: '#ffffff',
-    scale: 2,
-    foreignObjectRendering: true,
-  });
-
-  const imgData = canvas.toDataURL('image/png');
-
-  // Crear enlace de descarga
-  const link = document.createElement('a');
-  link.href = imgData;
-  link.download = 'torneo.png';
-  link.click();
-
-  setExporting(false);
-};
-
 
 
   return (
@@ -432,9 +409,10 @@ const exportPNG = async () => {
             </button>
             <button
               className="bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50"
-              onClick={confirmReset}
+              onClick={() => setPlayers([])}
+              disabled={players.length === 0}
             >
-              Reiniciar
+              Eliminar Participantes
             </button>
           </div>
         </div>
@@ -445,10 +423,11 @@ const exportPNG = async () => {
             JOGOS DE INVIERNO ANGÁ 2025
           </h1>
           <div className="flex-1 relative" ref={flowRef} style={{
-            backgroundImage: "url('/angaLogo.jpg')",
+            //backgroundImage: "url('/angaLogo12.jpg')",
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center center',
+            
           }}>
             <ReactFlow
               nodes={nodes}
@@ -470,8 +449,7 @@ const exportPNG = async () => {
           </div>
           <div className="absolute right-4 top-4 z-50 flex gap-2">
             <button
-              //onClick={exportPDF}
-              onClick={exportPNG}
+              onClick={exportPDF}
               className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded shadow"
             >
               Exportar a PDF

@@ -35,7 +35,7 @@
 
 
 .bg-custom {
-  background-image: url('./assets/img/angaLogo.jpg'); /* Coloca la imagen en la carpeta public raíz de Vite */
+  background-image: url('./assets/img/angaLogo0.png'); /* Coloca la imagen en la carpeta public raíz de Vite */
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;
